@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendrier Vaccination PNI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./Css/styles.css">
+</head>
+<body>
+    <button class="menu-btn" id="menuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="overlay" id="overlay"></div>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-syringe"></i>
+            </div>
+            <h2>SMI</h2>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-item">
+                <div class="menu-title active" id="pniMenu">
+                    <span>
+                        <i class="fas fa-syringe"></i>
+                        Programme PNI
+                    </span>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="submenu active">
+                    <a href="./Programme_PNI.html" class="active">
+                        <i class="fas fa-calendar-alt"></i>
+                        Calendrier vaccinal
+                    </a>
+                    <a href="./Commandes_vaccinales.html">
+                        <i class="fas fa-chart-bar"></i>
+                        Commandes vaccinales
+                    </a>
+                </div>
+            </div>
+            
+            <a href="#">
+                <i class="fas fa-baby"></i>
+                Programme PSGA
+            </a>
+            <!--a href="#">
+                <i class="fas fa-chart-line"></i>
+                Indicateurs vaccinaux
+            </a>
+            <a href="#">
+                <i class="fas fa-heartbeat"></i>
+                Lutte contre le VIH/SIDA
+            </a>
+            <a href="#">
+                <i class="fas fa-file-medical"></i>
+                Rapports
+            </a-->
+        </div>
+        
+        <div class="sidebar-footer">
+            <p>© 2025 SMI</p>
+            <p>Version 2.1</p>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <div class="icon-circle">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 
+                          0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 
+                          4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </div>
+            <h1>Calendrier de Vaccination PNI</h1>
+            <p class="subtitle">Entrez la date de naissance de votre enfant pour connaître les vaccins à administrer</p>
+        </div>
+
+        <div class="card">
+            <form id="vaccineForm">
+                <div class="form-group">
+                    <label for="birthDate">Date de naissance de l'enfant</label>
+                    <input type="date" id="birthDate" required max="">
+                </div>
+                <button type="submit" class="btn" id="calculateBtn">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M12 4.354a4 4 0 110 5.292M15 
+                              21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 
+                              6 0 00-9-5.197M13 7a4 4 0 
+                              11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    Calendrier des vaccins
+                </button>
+            </form>
+
+            <div id="results" class="results hidden">
+                <div class="age-display" id="ageDisplay"></div>
+
+                <div id="overdueSection" class="section hidden">
+                    <div class="section-header">
+                        <svg width="28" height="28" fill="none" stroke="#dc2626" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M12 9v2m0 4h.01m-6.938 
+                                  4h13.856c1.54 0 2.502-1.667 
+                                  1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 
+                                  0L3.34 16c-.77 1.333.192 3 
+                                  1.732 3z" />
+                        </svg>
+                        <h2 class="section-title overdue" id="overdueTitle">Vaccins en retard</h2>
+                    </div>
+                    <div id="overdueCards"></div>
+                </div>
+
+                <div id="currentSection" class="section hidden">
+                    <div class="section-header">
+                        <svg width="28" height="28" fill="none" stroke="#10b981" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M12 8v4l3 3m6-3a9 9 0 
+                                  11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h2 class="section-title current" id="currentTitle">Vaccins à administrer maintenant</h2>
+                    </div>
+                    <div id="currentCards"></div>
+                </div>
+
+                <div id="upcomingSection" class="section hidden">
+                    <div class="section-header">
+                        <svg width="28" height="28" fill="none" stroke="#2563eb" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M8 7V3m8 4V3m-9 
+                                  8h10M5 21h14a2 2 0 
+                                  002-2V7a2 2 0 
+                                  00-2-2H5a2 2 0 
+                                  00-2 2v12a2 2 0 
+                                  002 2z" />
+                        </svg>
+                        <h2 class="section-title upcoming" id="upcomingTitle">Prochains vaccins</h2>
+                    </div>
+                    <div id="upcomingCards"></div>
+                </div>
+
+                <div id="emptyState" class="empty-state hidden">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M9 12l2 2 4-4m6 2a9 9 
+                              0 11-18 0 9 9 0 
+                              0118 0z" />
+                    </svg>
+                    <h3>Tous les vaccins sont à jour !</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./Js/scripts.js"></script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendrier Vaccination PNI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./Css/styles.css">
+</head>
+<body>
+    <button class="menu-btn" id="menuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="overlay" id="overlay"></div>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-syringe"></i>
+            </div>
+            <h2>SMI</h2>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-item">
+                <div class="menu-title active" id="pniMenu">
+                    <span>
+                        <i class="fas fa-syringe"></i>
+                        Programme PNI
+                    </span>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="submenu active">
+                    <a href="./Programme_PNI.html" class="active">
+                        <i class="fas fa-calendar-alt"></i>
+                        Calendrier vaccinal
+                    </a>
+                    <a href="#">
+                        <i class="fas fa-chart-bar"></i>
+                        Commandes vaccinales
+                    </a>
+                </div>
+            </div>
+            
+            <a href="#">
+                <i class="fas fa-baby"></i>
+                Programme PSGA
+            </a>
+            <!--a href="#">
+                <i class="fas fa-chart-line"></i>
+                Indicateurs vaccinaux
+            </a>
+            <a href="#">
+                <i class="fas fa-heartbeat"></i>
+                Lutte contre le VIH/SIDA
+            </a>
+            <a href="#">
+                <i class="fas fa-file-medical"></i>
+                Rapports
+            </a-->
+        </div>
+        
+        <div class="sidebar-footer">
+            <p>© 2025 SMI</p>
+            <p>Version 2.1</p>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <div class="icon-circle">
+                <h2 style="color: white;"> <i class="fas fa-chart-bar"></i> </h2>
+            </div>
+            <h1>Commandes vaccinales</h1>
+        </div>
+        <div class="calculators-container">
+            <!-- Calculateur de Besoins -->
+            <div class="calculator-widget" id="needs-calc">
+                <div class="widget-header">
+                    <div class="widget-icon">
+                        <i class="fas fa-baby"></i>
+                    </div>
+                    <div>
+                        <h3 class="widget-title">Estimation des Besoins</h3>
+                        <p class="widget-description">Calculez le nombre d'enfants à vacciner selon la population et le taux de natalité</p>
+                    </div>
+                </div>
+
+                <div class="calculator-form">
+                    <div class="form-group">
+                        <label for="needs-population">Population totale de la zone</label>
+                        <input type="number" id="needs-population" placeholder="Ex: 1,200,000">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="needs-birthrate">Taux de natalité (%)</label>
+                        <input type="number" id="needs-birthrate" step="0.1" placeholder="Ex: 2.8">
+                    </div>
+
+                    <button class="calculate-btn" onclick="calculateNeeds()">
+                        <i class="fas fa-calculator"></i>
+                        Estimer les Besoins
+                    </button>
+                </div>
+
+                <div id="needs-result" class="results-section hidden">
+                    <div class="result-main">
+                        <div class="result-value" id="needs-result-number">0</div>
+                        <div class="result-label">enfants à vacciner annuellement</div>
+                    </div>
+                    <div class="result-details">
+                        <p><strong>Détail du calcul:</strong> <span id="needs-calculation"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculateur de Commandes -->
+            <div class="calculator-widget" id="order-calc">
+                <div class="widget-header">
+                    <div class="widget-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div>
+                        <h3 class="widget-title">Commandes Vaccinales</h3>
+                        <p class="widget-description">Déterminez les quantités optimales de vaccins à commander</p>
+                    </div>
+                </div>
+
+                <div class="calculator-form">
+                    <div class="form-group">
+                        <label for="order-children">Enfants cibles</label>
+                        <input type="number" id="order-children" placeholder="Nombre d'enfants à vacciner">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="order-cp">Type de vaccin</label>
+                        <select id="order-cp">
+                            <option value="">Sélectionnez un vaccin</option>
+                            <option value="2">BCG</option>
+                            <option value="1.33">HB, VPO, Penta, RR, DTC, Td</option>
+                            <option value="1.11">VPI</option>
+                            <option value="1.05">Pneumo, Rota</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="order-doses">Doses par enfant</label>
+                        <input type="number" id="order-doses" placeholder="Ex: 3" value="3">
+                    </div>
+
+                    <button class="calculate-btn" onclick="calculateOrder()">
+                        <i class="fas fa-shipping-fast"></i>
+                        Calculer la Commande
+                    </button>
+                </div>
+
+                <div id="order-result" class="results-section hidden">
+                    <div class="result-main">
+                        <div class="result-value" id="order-result-number"></div>
+                        <div class="result-label">doses totales</div>
+                    </div>
+                    <div class="result-details">
+                        <p><strong>Commande de base:</strong> <span id="order-base"></span> doses</p>
+                        <p><strong>Stock de sécurité:</strong> <span id="order-safety-display"></span> doses</p>
+                        <p><strong>Calcul:</strong> <span id="order-calculation"></span></p>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- Calculateur de Couverture -->
+            <div class="calculator-widget" id="coverage-calc">
+                <div class="widget-header">
+                    <div class="widget-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div>
+                        <h3 class="widget-title">Couverture Vaccinale</h3>
+                        <p class="widget-description">Évaluez l'efficacité de votre campagne de vaccination</p>
+                    </div>
+                </div>
+
+                <div class="calculator-form">
+                    <div class="form-group">
+                        <label for="coverage-vaccinated">Enfants vaccinés</label>
+                        <input type="number" id="coverage-vaccinated" placeholder="Nombre d'enfants vaccinés">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="coverage-target">Population cible</label>
+                        <input type="number" id="coverage-target" placeholder="Population totale cible">
+                    </div>
+
+                    <button class="calculate-btn" onclick="calculateCoverage()">
+                        <i class="fas fa-chart-line"></i>
+                        Analyser la Couverture
+                    </button>
+                </div>
+
+                <div id="coverage-result" class="results-section hidden">
+                    <div class="result-main">
+                        <div class="result-value" id="coverage-result-number">0%</div>
+                        <div class="result-label">taux de couverture</div>
+                    </div>
+                    <div class="result-badge" id="coverage-badge"></div>
+                    <div class="result-details">
+                        <p><strong>Enfants vaccinés:</strong> <span id="coverage-vaccinated-display">0</span></p>
+                        <p><strong>Population cible:</strong> <span id="coverage-target-display">0</span></p>
+                        <p><strong>Calcul:</strong> <span id="coverage-calculation"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculateur d'Abandon -->
+            <div class="calculator-widget" id="dropout-calc">
+                <div class="widget-header">
+                    <div class="widget-icon">
+                        <i class="fas fa-running"></i>
+                    </div>
+                    <div>
+                        <h3 class="widget-title">Taux d'Abandon</h3>
+                        <p class="widget-description">Mesurez la rétention entre la première et dernière dose</p>
+                    </div>
+                </div>
+
+                <div class="calculator-form">
+                    <div class="form-group">
+                        <label for="dropout-first">Enfants (1ère dose)</label>
+                        <input type="number" id="dropout-first" placeholder="Nombre ayant reçu la 1ère dose">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dropout-last">Enfants (dernière dose)</label>
+                        <input type="number" id="dropout-last" placeholder="Nombre ayant terminé le cycle">
+                    </div>
+
+                    <button class="calculate-btn" onclick="calculateDropout()">
+                        <i class="fas fa-user-slash"></i>
+                        Calculer l'Abandon
+                    </button>
+                </div>
+
+                <div id="dropout-result" class="results-section hidden">
+                    <div class="result-main">
+                        <div class="result-value" id="dropout-result-number">0%</div>
+                        <div class="result-label">taux d'abandon</div>
+                    </div>
+                    <div class="result-badge" id="dropout-badge"></div>
+                    <div class="result-details">
+                        <p><strong>Première dose:</strong> <span id="dropout-first-display">0</span> enfants</p>
+                        <p><strong>Dernière dose:</strong> <span id="dropout-last-display">0</span> enfants</p>
+                        <p><strong>Enfants perdus:</strong> <span id="dropout-lost">0</span></p>
+                        <p><strong>Calcul:</strong> <span id="dropout-calculation"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./Js/scripts.js"></script>
+</body>
+</html>

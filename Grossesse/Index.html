@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suivi Grossesse - Accompagnement Personnalisé</title>
+    <meta name="description" content="Application de suivi de grossesse détaillé avec calculateur, timeline des trimestres, calendrier de consultations et informations sur le développement de bébé semaine par semaine">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-color: #f5f3f9;
+            --text-color: #2d2547;
+            --card-bg: #ffffff;
+            --primary-color: #8b7ab8;
+            --secondary-color: #e878a8;
+            --accent-color: #6dbfa8;
+            --tertiary-color: #f4d86e;
+            --muted-color: #e8e4f0;
+            --border-color: #e0dae8;
+            --shadow: 0 4px 20px rgba(139, 122, 184, 0.15);
+            --shadow-glow: 0 0 30px rgba(139, 122, 184, 0.2);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(139, 122, 184, 0.1) 0%, rgba(232, 120, 168, 0.1) 50%, rgba(109, 191, 168, 0.1) 100%);
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+            padding: 2rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #6b5d87;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-description {
+            color: #6b5d87;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            box-shadow: var(--shadow-glow);
+        }
+
+        .feature-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            background: var(--muted-color);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 0.75rem;
+            background: var(--muted-color);
+            border-radius: 9999px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transition: width 0.5s ease;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            background: var(--muted-color);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b5d87;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: bold;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+            border-left: 2px solid var(--border-color);
+            padding-left: 2rem;
+        }
+
+        .timeline-item:last-child {
+            border-left: none;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -0.75rem;
+            top: 0;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background: var(--primary-color);
+            border: 3px solid var(--card-bg);
+        }
+
+        .timeline-dot.completed {
+            background: var(--accent-color);
+        }
+
+        .timeline-dot.current {
+            background: var(--secondary-color);
+            box-shadow: 0 0 10px var(--secondary-color);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .back-btn {
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="calculatorView" class="hero">
+        <div class="hero-content">
+            <div class="badge">
+                <span>❤️</span>
+                <span>Application de Suivi de Grossesse</span>
+            </div>
+            
+            <h1>
+                <span class="gradient-text">Suivez chaque moment</span>
+                <br>
+                <span>de votre grossesse</span>
+            </h1>
+            
+            <p class="subtitle">
+                Un suivi personnalisé et détaillé pour accompagner votre parcours vers la maternité
+            </p>
+
+            <div class="card" style="max-width: 500px; margin: 0 auto;">
+                <h2 class="card-title">Calculateur de Grossesse</h2>
+                <p class="card-description">Entrez la date de vos dernières règles</p>
+                
+                <div class="input-group">
+                    <input type="date" id="lastPeriodDate" required>
+                </div>
+                
+                <button class="btn" onclick="calculatePregnancy()">Calculer ma grossesse</button>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3>Suivi Hebdomadaire</h3>
+                    <p class="card-description">Découvrez le développement de bébé semaine par semaine</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🏥</div>
+                    <h3>Consultations</h3>
+                    <p class="card-description">Calendrier complet de vos rendez-vous médicaux</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">👶</div>
+                    <h3>Informations</h3>
+                    <p class="card-description">Conseils et informations personnalisées</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="resultsView" class="hidden">
+        <div class="container">
+            <button class="btn btn-secondary back-btn" onclick="resetCalculator()">← Nouvelle recherche</button>
+            
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                <span style="font-size: 2rem;">❤️</span>
+                <h1 class="gradient-text">Votre Suivi de Grossesse</h1>
+            </div>
+            <p class="subtitle">Bienvenue dans votre espace personnalisé de suivi</p>
+
+            <div class="content-grid">
+                <div>
+                    <!-- Progress Card -->
+                    <div class="card">
+                        <h2 class="card-title">❤️ Votre Progression</h2>
+                        
+                        <div style="margin: 1.5rem 0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span class="stat-label">Semaine de grossesse</span>
+                                <span class="stat-value gradient-text" id="weekDisplay">0 / 40</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-card" id="trimesterCard">
+                                <div class="stat-label">👶 Trimestre</div>
+                                <div class="stat-value" id="trimesterDisplay">1</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-label">📅 Jours restants</div>
+                                <div class="stat-value" style="color: var(--primary-color);" id="daysDisplay">0</div>
+                            </div>
+                        </div>
+
+                        <div style="padding: 1rem; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 0.75rem; margin-top: 1rem;">
+                            <p class="stat-label">Date prévue d'accouchement</p>
+                            <p style="font-size: 1.1rem; font-weight: 600;" id="dueDateDisplay"></p>
+                        </div>
+                    </div>
+
+                    <!-- Baby Development Card -->
+                    <div class="card">
+                        <h2 class="card-title">👶 Développement de Bébé</h2>
+                        <div id="babyDevelopment"></div>
+                    </div>
+                </div>
+
+                <!-- Appointments Timeline -->
+                <div class="card">
+                    <h2 class="card-title">📋 Calendrier des Consultations</h2>
+                    <div class="timeline" id="appointmentsTimeline"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const babyDevelopmentData = {
+            4: { size: "2mm", comparison: "grain de pavot", development: "Formation du tube neural" },
+            8: { size: "16mm", comparison: "framboise", development: "Formation des organes principaux" },
+            12: { size: "5.4cm", comparison: "prune", development: "Tous les organes sont formés" },
+            16: { size: "11cm", comparison: "avocat", development: "Bébé commence à bouger" },
+            20: { size: "16cm", comparison: "banane", development: "Vous pouvez sentir les mouvements" },
+            24: { size: "30cm", comparison: "épi de maïs", development: "Les poumons se développent" },
+            28: { size: "37cm", comparison: "aubergine", development: "Bébé peut ouvrir les yeux" },
+            32: { size: "42cm", comparison: "courge", development: "Prise de poids importante" },
+            36: { size: "47cm", comparison: "laitue romaine", development: "Bébé est presque prêt" },
+            40: { size: "51cm", comparison: "pastèque", development: "Bébé est prêt à naître" }
+        };
+
+        const appointments = [
+            { week: 8, title: "1ère consultation prénatale", description: "Examen médical complet et déclaration de grossesse" },
+            { week: 12, title: "1ère échographie", description: "Échographie de datation et dépistage" },
+            { week: 16, title: "2ème consultation", description: "Suivi de la grossesse" },
+            { week: 20, title: "2ème échographie", description: "Échographie morphologique" },
+            { week: 24, title: "3ème consultation", description: "Dépistage du diabète gestationnel" },
+            { week: 28, title: "4ème consultation", description: "Consultation du 3ème trimestre" },
+            { week: 32, title: "3ème échographie", description: "Échographie de croissance" },
+            { week: 36, title: "Consultation pré-accouchement", description: "Préparation à l'accouchement" },
+            { week: 39, title: "Consultation terme", description: "Dernière consultation avant accouchement" }
+        ];
+
+        function calculatePregnancy() {
+            const dateInput = document.getElementById('lastPeriodDate').value;
+            if (!dateInput) {
+                alert('Veuillez sélectionner une date');
+                return;
+            }
+
+            const lastPeriod = new Date(dateInput);
+            const today = new Date();
+            const daysSince = Math.floor((today - lastPeriod) / (1000 * 60 * 60 * 24));
+            const weeks = Math.floor(daysSince / 7);
+            const dueDate = new Date(lastPeriod.getTime() + 280 * 24 * 60 * 60 * 1000);
+            const trimester = weeks <= 13 ? 1 : weeks <= 27 ? 2 : 3;
+            const daysLeft = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+            const progress = (weeks / 40) * 100;
+
+            // Update displays
+            document.getElementById('weekDisplay').textContent = `${weeks} / 40`;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            document.getElementById('trimesterDisplay').textContent = trimester;
+            document.getElementById('daysDisplay').textContent = Math.max(0, daysLeft);
+            document.getElementById('dueDateDisplay').textContent = dueDate.toLocaleDateString('fr-FR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            // Update trimester card color
+            const trimesterCard = document.getElementById('trimesterCard');
+            const colors = {
+                1: 'background: rgba(244, 216, 110, 0.2); color: var(--tertiary-color);',
+                2: 'background: rgba(232, 120, 168, 0.2); color: var(--secondary-color);',
+                3: 'background: rgba(109, 191, 168, 0.2); color: var(--accent-color);'
+            };
+            trimesterCard.style = colors[trimester];
+
+            // Update baby development
+            updateBabyDevelopment(weeks);
+
+            // Update appointments timeline
+            updateAppointmentsTimeline(weeks);
+
+            // Show results view
+            document.getElementById('calculatorView').classList.add('hidden');
+            document.getElementById('resultsView').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function updateBabyDevelopment(currentWeek) {
+            const developmentDiv = document.getElementById('babyDevelopment');
+            
+            // Find closest week data
+            let closestWeek = 4;
+            for (let week in babyDevelopmentData) {
+                if (currentWeek >= week) {
+                    closestWeek = week;
+                }
+            }
+
+            const data = babyDevelopmentData[closestWeek];
+            developmentDiv.innerHTML = `
+                <div style="padding: 1.5rem; background: var(--muted-color); border-radius: 0.75rem; margin-top: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <div style="font-size: 3rem;">👶</div>
+                        <div>
+                            <div class="stat-label">Taille approximative</div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--secondary-color);">${data.size}</div>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 0.5rem;"><strong>Comparaison:</strong> Comme un(e) ${data.comparison}</p>
+                    <p><strong>Développement:</strong> ${data.development}</p>
+                </div>
+            `;
+        }
+
+        function updateAppointmentsTimeline(currentWeek) {
+            const timeline = document.getElementById('appointmentsTimeline');
+            timeline.innerHTML = appointments.map(apt => {
+                const status = currentWeek > apt.week ? 'completed' : currentWeek === apt.week ? 'current' : '';
+                const bgColor = status === 'completed' ? 'rgba(109, 191, 168, 0.1)' : 
+                               status === 'current' ? 'rgba(232, 120, 168, 0.1)' : 'transparent';
+                
+                return `
+                    <div class="timeline-item">
+                        <div class="timeline-dot ${status}"></div>
+                        <div style="background: ${bgColor}; padding: 1rem; border-radius: 0.5rem;">
+                            <div style="font-weight: 600; margin-bottom: 0.25rem;">${apt.title}</div>
+                            <div class="stat-label">Semaine ${apt.week}</div>
+                            <p style="font-size: 0.875rem; margin-top: 0.5rem;">${apt.description}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function resetCalculator() {
+            document.getElementById('calculatorView').classList.remove('hidden');
+            document.getElementById('resultsView').classList.add('hidden');
+            document.getElementById('lastPeriodDate').value = '';
+            window.scrollTo(0, 0);
+        }
+
+        // Set max date to today
+        document.getElementById('lastPeriodDate').max = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
